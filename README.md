@@ -6,9 +6,8 @@ using the elasticsearch ds in the output directory
 There are NO modifications needed for this to work on VKE. Its been tested with VKE v1.10-67
 
 NOTE: This has been tested with AWS Elasticseach in a public configuration for ease of use.
-
-- Please use the standard ways to secure elasticsearch per AWS documentation.
-- Two such options
+Please use the standard ways to secure elasticsearch per AWS documentation.
+Two such options
 - include using a proxy when elasticsearch is in a VPC deployment
 - using Cognito to configure user/password for access into AWS elasticsearch in the public config.
 
