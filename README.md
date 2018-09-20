@@ -6,10 +6,11 @@ using the elasticsearch ds in the output directory
 There are NO modifications needed for this to work on VKE. Its been tested with VKE v1.10-67
 
 NOTE: This has been tested with AWS Elasticseach in a public configuration for ease of use.
--Please use the standard ways to secure elasticsearch per AWS documentation.
--Two such options
--- include using a proxy when elasticsearch is in a VPC deployment
--- using Cognito to configure user/password for access into AWS elasticsearch in the public config.
+
+- Please use the standard ways to secure elasticsearch per AWS documentation.
+- Two such options
+- include using a proxy when elasticsearch is in a VPC deployment
+- using Cognito to configure user/password for access into AWS elasticsearch in the public config.
 
 [Fluent Bit](http://fluentbit.io) is a lightweight and extensible __Log Processor__ that comes with full support for Kubernetes:
 
@@ -43,12 +44,12 @@ Fluent Bit DaemonSet ready to be used with Elasticsearch on VMware Kubernetes En
 
 Please ensure you replace the following values in the fluent-bit-ds.yaml file
 
-...
+```
 - name: FLUENT_ELASTICSEARCH_HOST
   value: "<ENTER AWS ELASTICSEARCH URL HERE>"
 - name: FLUENT_ELASTICSEARCH_PORT
   value: "<ENTER AWS ELASTICSEARCH PORT HERE - GENERALLY - 443>"
-...
+```
 
 ```
 $ kubectl create -f ./output/elasticsearch/fluent-bit-ds.yaml
