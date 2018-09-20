@@ -27,9 +27,9 @@ spec:
           - containerPort: 2020
         env:
         - name: FLUENT_ELASTICSEARCH_HOST
-          value: "search-fitcyclelogging-5imvcnqtauvxi6e7qmarwnu2me.us-west-2.es.amazonaws.com"
+          value: "<ENTER AWS ELASTICSEARCH URL HERE>"
         - name: FLUENT_ELASTICSEARCH_PORT
-          value: "443"
+          value: "<ENTER AWS ELASTICSEARCH PORT HERE - USUALLY 443>"
         volumeMounts:
         - name: varlog
           mountPath: /var/log

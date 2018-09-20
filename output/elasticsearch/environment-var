@@ -1,5 +1,0 @@
-#!/bin/bash
-export FLUENT_ELASTICSEARCH_HOST="https://search-fitcyclelogging-5imvcnqtauvxi6e7qmarwnu2me.us-west-2.es.amazonaws.com"
-export FLUENT_ELASTICSEARCH_PORT="443"
-
-
