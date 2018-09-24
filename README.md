@@ -60,7 +60,7 @@ $ kubectl create -f ./output/elasticsearch/fluent-bit-ds.yaml
 
 ##### Elasticsearch in secure mode (Cognito or with VPC)
 
-###### Ensure you have a user with keys and the right policy in AWS IAM
+1)Ensure you have a user with keys and the right policy in AWS IAM
 First ensure that a user on AWS has access rights to the ES cluster
 i.e. if you are using Cognito - then sure the user has the following policy AmazonESCognitoAccess
 and ensure that there is a AWS Access Key and AWS Secret Key also configured.
@@ -89,7 +89,7 @@ Next create the configmap
 $ kubectl create -f ./output/elasticsearch/fluent-bit-configmap.yaml
 ```
 
-###### Next run the es-proxy 
+2)Next run the es-proxy 
 
 Change the following parameters in the es-proxy-deployment.yaml file
 with your parameters
@@ -111,7 +111,7 @@ $ kubectl create -f ./output/es-proxy/es-proxy-service.yaml
 
 This will now have es-proxy service running on port 9200 in the logging namespace
 
-###### Now run the fluentbit daemon set
+3)Now run the fluentbit daemon set
 
 Fluent Bit DaemonSet ready to be used with Elasticsearch on VMware Kubernetes Engine Cluster
 
