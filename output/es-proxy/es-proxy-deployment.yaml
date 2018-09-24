@@ -1,0 +1,44 @@
+apiVersion: apps/v1beta1 # for versions before 1.8.0 use apps/v1beta1
+kind: Deployment
+metadata:
+  name: es-proxy
+  namespace: logging
+  labels:
+    app: es-proxy
+spec:
+  selector:
+    matchLabels:
+      app: es-proxy
+  strategy:
+    type: Recreate
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: es-proxy
+    spec:
+      volumes:
+      - name: varlog
+        emptyDir: {}
+      containers:
+      - image: gcr.io/learning-containers-187204/vke-es-proxy #built using a go based es-proxy
+        name: es-proxy
+        env:        
+        - name: AWS_ACCESS_KEY_ID
+          value: "YOURAWSACCESSKEY"
+        - name: AWS_SECRET_ACCESS_KEY
+          value: "YOURAWSSECRETACCESSKEY"
+        - name: ES_ENDPOINT
+          value: "YOURESENDPOINT"
+        volumeMounts:
+        - name: varlog
+          mountPath: /var/log
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+      
+

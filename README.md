@@ -8,8 +8,10 @@ There are NO modifications needed for this to work on VKE. Its been tested with 
 NOTE: This has been tested with AWS Elasticseach in a public configuration for ease of use.
 Please use the standard ways to secure elasticsearch per AWS documentation.
 Two such options
-- include using a proxy when elasticsearch is in a VPC deployment
+- elasticsearch deployed in a VPC deployment 
 - using Cognito to configure user/password for access into AWS elasticsearch in the public config.
+
+In either case the best way to access them is to use a proxy. We have included a proxy if you secure the ES configuration. Notes below
 
 [Fluent Bit](http://fluentbit.io) is a lightweight and extensible __Log Processor__ that comes with full support for Kubernetes:
 
@@ -32,6 +34,8 @@ $ kubectl create -f fluent-bit-role-binding.yaml
 
 #### Fluent Bit to Elasticsearch
 
+##### Elasticsearch in public open configuration
+
 The next step is to create a ConfigMap that will be used by our Fluent Bit DaemonSet.
 We will be using the standard configmap from the fluentbit v0.13 repo with NO modifications:
 
@@ -53,6 +57,69 @@ Please ensure you replace the following values in the fluent-bit-ds.yaml file
 ```
 $ kubectl create -f ./output/elasticsearch/fluent-bit-ds.yaml
 ```
+
+##### Elasticsearch in secure mode (Cognito or with VPC)
+
+###### Ensure you have a user with keys and the right policy in AWS IAM
+First ensure that a user on AWS has access rights to the ES cluster
+i.e. if you are using Cognito - then sure the user has the following policy AmazonESCognitoAccess
+and ensure that there is a AWS Access Key and AWS Secret Key also configured.
+
+The next step is to create a ConfigMap that will be used by our Fluent Bit DaemonSet.
+We will be using the standard configmap from the fluentbit v0.13 repo with 
+the following modifications
+
+Change the following parameter in the fluent-bit-configmap.yaml
+```
+  output-elasticsearch.conf: |
+    [OUTPUT]
+        Name            es
+        Match           *
+        Host            ${FLUENT_ELASTICSEARCH_HOST}
+        Port            ${FLUENT_ELASTICSEARCH_PORT}
+        Logstash_Format On
+        Retry_Limit     False
+        tls             Off  <---- must be configured to Off (On is default)
+        tls.verify      Off
+```
+
+Next create the configmap
+
+```
+$ kubectl create -f ./output/elasticsearch/fluent-bit-configmap.yaml
+```
+
+###### Next run the es-proxy 
+
+Change the following parameters in the es-proxy-deployment.yaml file
+with your parameters
+
+```
+        -name: AWS_ACCESS_KEY_ID
+          value: "YOURAWSACCESSKEY"
+        - name: AWS_SECRET_ACCESS_KEY
+          value: "YOURAWSSECRETACCESSKEY"
+        - name: ES_ENDPOINT
+          value: "YOURESENDPOINT"
+```
+
+Now run:
+```
+$ kubectl create -f ./output/es-proxy/es-proxy-deployment.yaml
+$ kubectl create -f ./output/es-proxy/es-proxy-service.yaml
+```
+
+This will now have es-proxy service running on port 9200 in the logging namespace
+
+###### Now run the fluentbit daemon set
+
+Fluent Bit DaemonSet ready to be used with Elasticsearch on VMware Kubernetes Engine Cluster
+
+```
+$ kubectl create -f ./output/elasticsearch/fluent-bit-ds-with-proxy.yaml
+```
+
+
 
 ## Details
 
